@@ -22,6 +22,10 @@ func validateSourceSystem(w http.ResponseWriter, sourceSystemID string) (SourceS
 		util.InternalServerError(&w, "contact_support")
 		return source, false
 	}
+	if !source.IsActive {
+		util.NotFound(&w, "Source "+sourceSystemID+"is not active")
+		return source, false
+	}
 
 	return source, true
 }

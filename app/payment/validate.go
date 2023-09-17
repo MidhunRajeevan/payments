@@ -27,13 +27,17 @@ func validatePaymentRequest(w http.ResponseWriter, req PaymentRequest, sourceSys
 	}
 
 	// check if the source system exist in the DB
-	_, err = sources.SelectSource(sourceSystemID)
+	source, err := sources.SelectSource(sourceSystemID)
 	if err == pgx.ErrNoRows {
 		util.NotFound(&w, "not_found")
 		return false
 	} else if err != nil {
 		log.Println("Select Source System Error:", err.Error())
 		util.InternalServerError(&w, "contact_support")
+		return false
+	}
+	if !source.IsActive {
+		util.NotFound(&w, "Source "+sourceSystemID+"is not active")
 		return false
 	}
 

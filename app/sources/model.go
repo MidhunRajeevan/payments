@@ -6,15 +6,17 @@ import (
 )
 
 type SourceSystem struct {
-	ID         int64     `json:"-"`
-	Did        string    `json:"did"`
-	NameEn     string    `json:"nameEn"`
-	NameAr     string    `json:"NameAr"`
-	Status     string    `json:"status"`
-	IsActive   bool      `json:"isActive"`
-	IsArchived bool      `json:"isArchived"`
-	CreatedAt  time.Time `json:"createdAt"`
-	UpdatedAt  time.Time `json:"updatedAt"`
+	ID           int64     `json:"-"`
+	Did          string    `json:"did"`
+	StandardName string    `json:"standardName"`
+	NameEn       string    `json:"nameEn"`
+	NameAr       string    `json:"NameAr"`
+	Description  string    `json:"description"`
+	Status       string    `json:"status"`
+	IsActive     bool      `json:"isActive"`
+	IsArchived   bool      `json:"isArchived"`
+	CreatedAt    time.Time `json:"createdAt"`
+	UpdatedAt    time.Time `json:"updatedAt"`
 }
 
 type SourceSystemConfig struct {

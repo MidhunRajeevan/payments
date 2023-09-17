@@ -40,18 +40,24 @@ func build() {
 	 source system can be activate or deactivate , there should be a audit table to track the same
 	*/
 	statements = append(statements, `
-		create table if not exists source_system (
+		create table if not exists source_systems (
 		id bigserial PRIMARY KEY,
 		did citext NOT NULL,
+		standardName citext NOT NULL,
 		name_en citext NOT NULL,
 		name_ar citext NOT NULL,
-		status  text not null default 'created',
+		description text,
+		status  text not null default 'active',
 		is_active boolean NOT NULL DEFAULT true,
 		is_archived boolean not null default false,
 		created_at timestamptz NOT NULL DEFAULT now(),
 		updated_at timestamptz NOT NULL DEFAULT now()
 	)`)
 
+	statements = append(statements, `
+		create unique index if not exists ux_did_on_source_systems
+		on source_systems
+		using btree (did)`)
 	/*
 	 table to capture the configuration details of the source system
 	*/
