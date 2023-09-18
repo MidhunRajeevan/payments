@@ -114,6 +114,11 @@ func build() {
 	)
 	`)
 
+	statements = append(statements, `
+		create unique index if not exists idx_unique_did_gateway_code
+		on source_system_gateway
+		using btree (did, gateway_code)`)
+
 	/*
 	 source_system_audit table tracks the changes to source_system,source_system_config,source_system_payment_gateway
 	*/

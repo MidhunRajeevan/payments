@@ -15,8 +15,8 @@ func Routes() http.Handler {
 	mux.Post("/{source-systems-did}/events/activate", activateSourceByID)
 	mux.Post("/{source-systems-did}/events/deactivate", deactivateSourceByID)
 	mux.Post("/{source-systems-did}/gateway-mapping", mapGatewayToSource)
-
-	// Define routes specific to source package
+	mux.Post("/{source-systems-did}/gateway-mapping/events/activate", activateSourceGatewayMapping)
+	mux.Post("/{source-systems-did}/gateway-mapping/events/deActivate", deActivateSourceGatewayMapping)
 
 	return mux
 }

@@ -30,7 +30,7 @@ func validateSourceSystem(w http.ResponseWriter, sourceSystemID string) (SourceS
 	return source, true
 }
 
-func validatePaymentRequest(w http.ResponseWriter, req SourceSystemGateway, sourceSystemID string) bool {
+func validateSourceAndGateway(w http.ResponseWriter, req SourceSystemGateway, sourceSystemID string) bool {
 
 	validate := validator.New()
 	err := validate.Struct(req)

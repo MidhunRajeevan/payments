@@ -50,12 +50,12 @@ type SourceSystemRecord struct {
 }
 
 type SourceSystemGateway struct {
-	ID          int64  `json:"id"`
-	DID         string `json:"did"`
-	GatewayCode string `json:"gateway_code"`
-	Status      string `json:"status"`
-	IsActive    bool   `json:"is_active"`
-	IsArchived  bool   `json:"is_archived"`
-	CreatedAt   string `json:"created_at"`
-	UpdatedAt   string `json:"updated_at"`
+	ID          int64     `json:"id"`
+	DID         string    `json:"did"`
+	GatewayCode string    `json:"gateway_code"`
+	Status      string    `json:"status"`
+	IsActive    bool      `json:"is_active"`
+	IsArchived  bool      `json:"is_archived"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
 }

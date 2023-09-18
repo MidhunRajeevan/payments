@@ -131,3 +131,16 @@ func insertSourceSystemGateway(r SourceSystemGateway) (SourceSystemGateway, erro
 		r.DID, r.GatewayCode)
 	return execAndScanSourceSystemGateway(statement, params)
 }
+
+func updateSourceSystemGatewayStatus(r SourceSystemGateway) (SourceSystemGateway, error) {
+	statement := `
+	update source_system_gateway set
+  	is_active = $1,
+	updated_at = current_timestamp
+	where did = $2 and gateway_code =$3
+	returning
+	id, did, gateway_code,status, is_active, is_archived, created_at, updated_at`
+	params := make([]interface{}, 0)
+	params = append(params, r.IsActive, r.DID, r.GatewayCode)
+	return execAndScanSourceSystemGateway(statement, params)
+}

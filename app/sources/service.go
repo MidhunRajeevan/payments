@@ -154,8 +154,8 @@ func mapGatewayToSource(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	sourceSystemID := chi.URLParam(r, "source-systems-ID")
-	if !validatePaymentRequest(w, req, sourceSystemID) {
+	sourceSystemID := chi.URLParam(r, "source-systems-did")
+	if !validateSourceAndGateway(w, req, sourceSystemID) {
 		return
 	}
 	record, err := insertSourceSystemGateway(req)
@@ -168,4 +168,58 @@ func mapGatewayToSource(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(record)
 
+}
+
+func activateSourceGatewayMapping(w http.ResponseWriter, r *http.Request) {
+
+	var req SourceSystemGateway
+	err := json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		util.BadRequest(&w, "Failed to parse JSON request")
+		return
+	}
+
+	sourceSystemID := chi.URLParam(r, "source-systems-did")
+	if !validateSourceAndGateway(w, req, sourceSystemID) {
+		return
+	}
+	req.IsActive = true
+
+	res, err := updateSourceSystemGatewayStatus(req)
+	if err != nil {
+		log.Println("Update Source-System Gateway status Error:", err.Error())
+		util.InternalServerError(&w, "contact_support")
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(res)
+}
+
+func deActivateSourceGatewayMapping(w http.ResponseWriter, r *http.Request) {
+
+	var req SourceSystemGateway
+	err := json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		util.BadRequest(&w, "Failed to parse JSON request")
+		return
+	}
+
+	sourceSystemID := chi.URLParam(r, "source-systems-did")
+	if !validateSourceAndGateway(w, req, sourceSystemID) {
+		return
+	}
+	req.IsActive = false
+
+	res, err := updateSourceSystemGatewayStatus(req)
+	if err != nil {
+		log.Println("Update Source-System Gateway status Error:", err.Error())
+		util.InternalServerError(&w, "contact_support")
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(res)
 }
