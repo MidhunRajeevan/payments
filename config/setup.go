@@ -135,42 +135,55 @@ func build() {
 	 customer to capture the customer associated with the invoice
 	*/
 	statements = append(statements, `
-		create table if not exists customer (
+		create table if not exists companies (
 		id bigserial PRIMARY KEY,
-		did citext NOT NULL,
-		name text,
+		name_en text,
+		name_ar text,
 		custgroup text,
 		email citext,
 		trade_license_number text NOT NULL, 
+		traffic_file_number text, 
 		account text,
 		created_at timestamptz NOT NULL DEFAULT now(),
 		updated_at timestamptz NOT NULL DEFAULT now()
 	)
 	`)
 
+	statements = append(statements, `
+		create unique index if not exists idx_trade_license_number
+		on companies
+		using btree (trade_license_number)`)
+
 	/*
 	 invoice table to capture the invoice details of the source system
 	*/
 	statements = append(statements,
-		`create table if not exists invoice (
+		`create table if not exists invoices (
 		id  bigserial PRIMARY KEY,
+		did citext NOT NULL,
+		company_id bigint,
 		number      citext NOT NULL,
 		issued_date date NOT NULL,
 		last_date   date NOT NULL,
-		did citext NOT NULL,
-		customer_id int,
+		description citext,
 		amount_value float NOT NULL,
 		amount_currency citext NOT NULL,
 		payment_status citext NOT NULL default 'not-paid',
 		payment_date timestamptz,
+		invoice_reference_number citext NOT NULL,
+		payment_reference_number citext,
 		purchase_order_form_no text,
 		document_date timestamptz,
 		rms_invoice_date timestamptz,
-		company_traffic_file_number citext NOT NULL,
-		company_trade_license_number citext NOT NULL,
+		requester jsonb not null default '[]'::json,
 		created_at  timestamptz NOT NULL DEFAULT now(),
 		updated_at  timestamptz NOT NULL DEFAULT now()
 	)`)
+
+	statements = append(statements, `
+		create unique index if not exists idx_number
+		on invoices
+		using btree (number)`)
 
 	statements = append(statements, `
 		create table if not exists transactions (
@@ -190,6 +203,26 @@ func build() {
 		updated_at timestamptz NOT NULL DEFAULT now()
 	)
 	`)
+
+	statements = append(statements, `
+		create table if not exists contacts (
+		id bigserial NOT NULL,
+		contactable_type text NULL,
+		contactable_id int8 NULL,
+		contactable_key text NOT NULL,
+		addresses jsonb not null default '[]'::json,
+		phone_numbers jsonb not null default '[]'::json,
+		emails jsonb not null default '[]'::json,
+		attachments jsonb not null default '[]'::json,
+		created_at timestamptz NOT NULL DEFAULT now(),
+		updated_at timestamptz NOT NULL DEFAULT now()
+	)
+	`)
+
+	statements = append(statements, `
+		create unique index if not exists idx_unique_contactable_type_id
+		on contacts
+		using btree (contactable_type, contactable_id)`)
 
 }
 

@@ -1,6 +1,7 @@
 package sources
 
 import (
+	"MidhunRajeevan/payments/app/gateways"
 	"MidhunRajeevan/payments/app/util"
 	"encoding/json"
 	"log"
@@ -8,6 +9,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-playground/validator"
+	pgx "github.com/jackc/pgx/v4"
 )
 
 func createSource(w http.ResponseWriter, r *http.Request) {
@@ -167,6 +169,25 @@ func mapGatewayToSource(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(record)
+}
+
+func getSourceGatewayMapping(w http.ResponseWriter, r *http.Request) {
+	// Parse the JSON request
+
+	sourceSystemID := chi.URLParam(r, "source-systems-did")
+
+	lstGateways, err := gateways.SelectGatewaysByDid(sourceSystemID)
+	if err == pgx.ErrNoRows {
+		util.NotFound(&w, "not_found")
+		return
+	} else if err != nil {
+		log.Println("Select Source System Error:", err.Error())
+		util.InternalServerError(&w, "contact_support")
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(lstGateways)
 
 }
 

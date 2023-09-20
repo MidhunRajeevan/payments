@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"MidhunRajeevan/payments/app/customers"
 	"MidhunRajeevan/payments/app/gateways"
 	"MidhunRajeevan/payments/app/payment"
 	"MidhunRajeevan/payments/app/sources"
@@ -13,9 +12,9 @@ import (
 func Routes() http.Handler {
 	mux := chi.NewRouter()
 	mux.Mount("/gateways", gateways.Routes())
-	mux.Mount("/payment-request", payment.Routes())
+	mux.Mount("/source-systems/{source-systems-did}/payments", payment.Routes())
+	mux.Mount("/source-systems/{source-systems-did}/invoices", payment.InvoiceRoutes())
 	mux.Mount("/source-systems", sources.Routes())
-	mux.Mount("/customer", customers.Routes())
 	mux.Get("/", Index)
 	return mux
 }

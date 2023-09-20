@@ -8,7 +8,14 @@ import (
 
 func Routes() http.Handler {
 	mux := chi.NewRouter()
-	mux.Post("/source-systems/{source-systems-ID}", ProcessPayment)
+	mux.Post("/token", GenerateTransactionToken)
+
+	return mux
+}
+
+func InvoiceRoutes() http.Handler {
+	mux := chi.NewRouter()
+	mux.Post("/", CreateInvoice)
 
 	return mux
 }

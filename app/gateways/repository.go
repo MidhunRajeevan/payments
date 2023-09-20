@@ -44,7 +44,7 @@ func SelectGatewaysByDid(did string) ([]PaymentGateway, error) {
 	g.status, g.is_active, g.is_archived,g.created_at, g.updated_at
 	from gateways g
 	inner join source_system_gateway sg
-		  on g.id = sg.gateway_id
+		  on g.code = sg.gateway_code
 	where sg.did = $1 and g.is_active =true`
 	params := make([]interface{}, 0)
 	params = append(params, did)

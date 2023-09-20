@@ -25,13 +25,10 @@ type Address struct {
 	Address     string      `json:"address"`
 	Makani      string      `json:"makani"`
 	PoBox       string      `json:"poBox"`
-	Building    CodeName    `json:"building"`
-	Street      CodeName    `json:"street"`
 	City        CodeName    `json:"city"`
-	Region      CodeName    `json:"region"`
+	Emirate     CodeName    `json:"emirate"`
 	Country     CodeName    `json:"country"`
 	PostalCode  string      `json:"postalCode"`
-	Emirate     CodeName    `json:"emirate"`
 	GeoLocation GeoLocation `json:"geoLocation"`
 	Preferred   bool        `json:"preferred"`
 }
@@ -69,18 +66,24 @@ type Email struct {
 	Preferred bool   `json:"preferred"`
 }
 
+type Attachment struct {
+	Url  string `json:"url"`
+	Path string `json:"path"`
+}
+
 type Company struct {
-	Name               CodeName `json:"name"`
-	TrafficFileNumber  string   `json:"trafficFileNumber"`
-	TradeLicenseNumber string   `json:"tradeLicenseNumber"`
-	Contact            Contact  `json:"contact"`
+	Name               Name    `json:"name"`
+	TrafficFileNumber  string  `json:"trafficFileNumber"`
+	TradeLicenseNumber string  `json:"tradeLicenseNumber"`
+	Contact            Contact `json:"contact"`
 }
 
 type Invoice struct {
-	Number     string `json:"number"`
-	IssuedDate string `json:"issuedDate"`
-	LastDate   string `json:"lastDate"`
-	Amount     Amount `json:"amount"`
+	Number      string    `json:"number"`
+	IssuedDate  time.Time `json:"issuedDate"`
+	LastDate    time.Time `json:"lastDate"`
+	Amount      Amount    `json:"amount"`
+	Description string    `json:"description"`
 }
 
 type Ewallet struct {
@@ -94,10 +97,9 @@ type Name struct {
 }
 
 type Person struct {
-	Name       Name    `json:"name"`
-	UserID     string  `json:"userid"`
-	EmiratesID string  `json:"emiratesId"`
-	Contact    Contact `json:"contact"`
+	Name    Name    `json:"name"`
+	UserID  string  `json:"userid"`
+	Contact Contact `json:"contact"`
 }
 
 type Source struct {
@@ -106,11 +108,17 @@ type Source struct {
 }
 
 type PaymentRequest struct {
-	Kind    string  `json:"kind"`
 	Invoice Invoice `json:"invoice"`
 	Service Service `json:"service"`
 	Company Company `json:"company"`
 	Ewallet Ewallet `json:"ewallet"`
+	Person  Person  `json:"person"`
+	Source  Source  `json:"source"`
+}
+
+type InvoiceRequest struct {
+	Invoice Invoice `json:"invoice"`
+	Company Company `json:"company"`
 	Person  Person  `json:"person"`
 	Source  Source  `json:"source"`
 }
@@ -151,4 +159,53 @@ type TransactionRequestResponse struct {
 	CreatedAt            time.Time       `json:"createdAt"`
 	UpdatedAt            time.Time       `json:"updatedAt"`
 	Channels             []GatewayHeader `json:"channels"`
+}
+
+type Companies struct {
+	ID                 int64     `json:"id"`
+	Name               Name      `json:"name"`
+	CustGroup          string    `json:"custgroup"`
+	Email              string    `json:"email"`
+	TradeLicenseNumber string    `json:"tradeLicenseNumber" validate:"required"`
+	TrafficFileNumber  string    `json:"trafficFileNumber" validate:"required"`
+	Account            string    `json:"account"`
+	CreatedAt          time.Time `json:"created_at"`
+	UpdatedAt          time.Time `json:"updated_at"`
+}
+
+type ContactTable struct {
+	ID              int64     `json:"id"`
+	ContactableType string    `json:"contactable_type"`
+	ContactableID   int64     `json:"contactable_id"`
+	ContactableKey  string    `json:"contactable_key"`
+	Addresses       string    `json:"addresses"`
+	Phones          string    `json:"phones"`
+	Emails          string    `json:"emails"`
+	Attachments     string    `json:"attachments"`
+	CreatedBy       string    `json:"created_by"`
+	UpdatedBy       string    `json:"updated_by"`
+	CreatedAt       time.Time `json:"created_at"`
+	UpdatedAt       time.Time `json:"updated_at"`
+}
+
+type InvoiceTable struct {
+	ID                     int64      `json:"id"`
+	Did                    string     `json:"did" validate:"required"`
+	CompanyID              int64      `json:"company_id"`
+	Number                 string     `json:"number" validate:"required"`
+	IssuedDate             time.Time  `json:"issued_date" validate:"required"`
+	LastDate               time.Time  `json:"last_date" validate:"required"`
+	Description            string     `json:"description"`
+	AmountValue            float64    `json:"amount_value" validate:"required"`
+	AmountCurrency         string     `json:"amount_currency" validate:"required"`
+	PaymentStatus          string     `json:"payment_status" validate:"required"`
+	PaymentDate            *time.Time `json:"payment_date"`
+	PaymentReferenceNumber *string    `json:"paymentReferenceNumber"`
+	InvoiceReferenceNumber string     `json:"invoiceReferenceNumber"`
+	PurchaseOrderNo        string     `json:"purchase_order_form_no"`
+	DocumentDate           *time.Time `json:"document_date"`
+	RMSInvoiceDate         *time.Time `json:"rms_invoice_date"`
+	Requester              string     `json:"requester"`
+	CreatedAt              time.Time  `json:"created_at"`
+	UpdatedAt              time.Time  `json:"updated_at"`
 }
